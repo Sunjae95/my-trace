@@ -1,4 +1,4 @@
-import styles from '@/styles/Home.module.css';
+import styles from '@styles/Home.module.css';
 import styled from '@emotion/styled';
 import { Inter } from 'next/font/google';
 
