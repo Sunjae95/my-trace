@@ -1,9 +1,12 @@
 {
+  "include": ["**/*.js", "**/*.jsx"],
   "compilerOptions": {
+    "target": "ES5",
+    "allowJs": true,
     "baseUrl": ".",
     "paths": {
-      "@components": ["./src/components/index.js"],
-      "@styles/*": ["./src/styles/*"]
+      "@components": ["./src/components/index"],
+      "@styles": ["./src/styles/index"]
     }
   }
 }
