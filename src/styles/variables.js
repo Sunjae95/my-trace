@@ -11,4 +11,5 @@ export const FONT_WEIGHT = {
 export const COLOR = {
   white: '#FFFFFF',
   black: '#000000',
+  grey: '#CCCCCC',
 };
