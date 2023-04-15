@@ -128,4 +128,18 @@ export const globalStyle = css`
     border-collapse: collapse;
     border-spacing: 0;
   }
+
+  html,
+  body {
+    line-height: 22px;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
 `;
