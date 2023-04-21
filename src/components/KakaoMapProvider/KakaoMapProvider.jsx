@@ -5,7 +5,7 @@ export const KakaoMapContext = createContext(null);
 
 export const KakaoMapProvider = ({ children }) => {
   const [isLoadingSDK, setIsLoadingSDK] = useState(true);
-  const [isLoadingMap, setIsLoadingMap] = useState(true);
+  const [kakaoMap, setKakaoMap] = useState(null);
 
   const handleDrawMap = useCallback(
     (dom) => {
@@ -16,9 +16,9 @@ export const KakaoMapProvider = ({ children }) => {
           center: new kakao.maps.LatLng(33.450701, 126.570667),
           level: 3,
         };
+        const map = new kakao.maps.Map(dom, options);
 
-        new kakao.maps.Map(dom, options);
-        setIsLoadingMap(false);
+        setKakaoMap(map);
       });
     },
     [isLoadingSDK]
@@ -30,9 +30,7 @@ export const KakaoMapProvider = ({ children }) => {
         src={`//dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.KAKAO_MAP}&autoload=false`}
         onLoad={() => setIsLoadingSDK(false)}
       />
-      <KakaoMapContext.Provider value={{ isLoadingSDK, isLoadingMap, handleDrawMap }}>
-        {children}
-      </KakaoMapContext.Provider>
+      <KakaoMapContext.Provider value={{ isLoadingSDK, kakaoMap, handleDrawMap }}>{children}</KakaoMapContext.Provider>
     </>
   );
 };
