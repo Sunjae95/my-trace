@@ -1,17 +1,39 @@
 import React, { useContext, useEffect, useRef } from 'react';
 
 import { KakaoMapContext } from '@components';
+import { useMarker } from 'src/hooks';
 
 const Home = () => {
   const ref = useRef(null);
-  const { isLoadingSDK, handleDrawMap } = useContext(KakaoMapContext);
+  const { kakaoMap, handleDrawMap } = useContext(KakaoMapContext);
+  const { handleSettingMarker } = useMarker();
 
   useEffect(() => {
-    if (isLoadingSDK) return;
-
     handleDrawMap(ref.current);
-  }, [isLoadingSDK, handleDrawMap]);
+  }, [handleDrawMap]);
 
+  useEffect(() => {
+    if (!kakaoMap) return;
+
+    handleSettingMarker([
+      {
+        title: '카카오',
+        latlng: new kakao.maps.LatLng(33.450705, 126.570677),
+      },
+      {
+        title: '생태연못',
+        latlng: new kakao.maps.LatLng(33.450936, 126.569477),
+      },
+      {
+        title: '텃밭',
+        latlng: new kakao.maps.LatLng(33.450879, 126.56994),
+      },
+      {
+        title: '근린공원',
+        latlng: new kakao.maps.LatLng(33.451393, 126.570738),
+      },
+    ]);
+  }, [kakaoMap, handleSettingMarker]);
   return (
     <main>
       <div
