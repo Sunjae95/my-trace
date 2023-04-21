@@ -1,24 +1,16 @@
 import React, { useContext, useEffect, useRef } from 'react';
-import styled from '@emotion/styled';
 
 import { KakaoMapContext } from '@components';
 
 const Home = () => {
   const ref = useRef(null);
-  const map = useContext(KakaoMapContext);
+  const { isLoadingSDK, handleDrawMap } = useContext(KakaoMapContext);
 
   useEffect(() => {
-    if (!map.isLoading && ref.current) {
-      kakao.maps.load(() => {
-        const options = {
-          center: new kakao.maps.LatLng(33.450701, 126.570667),
-          level: 3,
-        };
+    if (isLoadingSDK) return;
 
-        new kakao.maps.Map(ref.current, options);
-      });
-    }
-  }, [map]);
+    handleDrawMap(ref.current);
+  }, [isLoadingSDK, handleDrawMap]);
 
   return (
     <main>
@@ -31,8 +23,3 @@ const Home = () => {
 };
 
 export default Home;
-
-const Title = styled.h1`
-  color: red;
-  fontsize: 100px;
-`;
