@@ -1,5 +1,5 @@
 import { KakaoMapContext } from '@components';
-import { useCallback, useContext, useMemo, useState } from 'react';
+import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 
 const IMAGE_SRC = 'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png';
 
@@ -13,21 +13,47 @@ export const useMarker = () => {
     [markerSize]
   );
 
-  const handleSettingMarker = useCallback(
-    (changedMarkerList) => {
-      if (kakaoMap && markerImage) {
-        changedMarkerList.forEach((marker) => {
-          new kakao.maps.Marker({
-            map: kakaoMap,
-            position: marker.latlng, // 마커를 표시할 위치
-            image: markerImage, // 마커 이미지
-          });
-        });
-        setMarkerList(changedMarkerList);
-      }
+  const handleClickMarker = useCallback(
+    (marker) => () => {
+      console.log('handleClickMarker', marker);
     },
-    [markerImage, kakaoMap]
+    []
   );
+
+  const handleAddMarker = useCallback(() => {
+    if (!kakaoMap) return;
+
+    markerList.forEach((marker) => {
+      marker.setMap(kakaoMap);
+      kakao.maps.event.addListener(marker, 'click', handleClickMarker(marker));
+    });
+  }, [kakaoMap, markerList, handleClickMarker]);
+
+  const handleRemoveMarker = useCallback(() => {
+    markerList.forEach((marker) => {
+      marker.setMap(null);
+      kakao.maps.event.addListener(marker, 'click', handleClickMarker(marker));
+    });
+  }, [markerList, handleClickMarker]);
+
+  const handleSettingMarker = useCallback(
+    (infoList) =>
+      setMarkerList(
+        infoList.map(
+          (info) =>
+            new kakao.maps.Marker({
+              position: info.latlng,
+              image: markerImage,
+            })
+        )
+      ),
+    [markerImage]
+  );
+
+  useEffect(() => {
+    handleAddMarker();
+    return () => handleRemoveMarker();
+  }, [handleAddMarker, handleRemoveMarker]);
 
   return { handleSettingMarker };
 };
