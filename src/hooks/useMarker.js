@@ -1,5 +1,6 @@
-import { KakaoMapContext } from '@components';
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
+
+import { KakaoMapContext } from '@components';
 
 const IMAGE_SRC = 'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png';
 
