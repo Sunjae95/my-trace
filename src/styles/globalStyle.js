@@ -131,6 +131,7 @@ export const globalStyle = css`
 
   html,
   body {
+    height: 100%;
     line-height: 22px;
   }
 
@@ -141,5 +142,10 @@ export const globalStyle = css`
 
   * {
     box-sizing: border-box;
+  }
+
+  #__next {
+    width: 100%;
+    height: 100%;
   }
 `;
