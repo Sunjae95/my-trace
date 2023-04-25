@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useRef } from 'react';
 
 import { KakaoMapContext } from '@components';
 import { useMarker } from '@hooks';
+import { Information } from 'src/components/Information';
 
 const Home = () => {
   const ref = useRef(null);
@@ -40,6 +41,7 @@ const Home = () => {
         ref={ref}
         style={{ width: '500px', height: '400px' }}
       ></div>
+      <Information />
     </main>
   );
 };
