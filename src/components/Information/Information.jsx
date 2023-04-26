@@ -1,10 +1,15 @@
+import React, { useContext } from 'react';
 import styled from '@emotion/styled';
-import React from 'react';
-import { Text } from '../Text';
-import { COLOR, FONT_SIZE, FONT_WEIGHT } from '@styles';
-import { Button } from '../Button';
 
-export const Information = ({ title, longitude, latitude }) => {
+import { Text } from '../Text';
+import { Button } from '../Button';
+import { CurrentContext } from '../CurrentProvider';
+
+import { COLOR, FONT_SIZE, FONT_WEIGHT } from '@styles';
+
+export const Information = ({ title }) => {
+  const { current } = useContext(CurrentContext);
+
   return (
     <Container>
       <TextWrapper>
@@ -16,7 +21,7 @@ export const Information = ({ title, longitude, latitude }) => {
       </TextWrapper>
       <TextWrapper>
         <Text
-          text={'주소 이름'}
+          text={current ? `경도${current.La} 위도${current.Ma}` : ''}
           color={COLOR.grey}
         />
       </TextWrapper>
