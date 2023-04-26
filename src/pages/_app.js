@@ -1,6 +1,7 @@
 import { Global } from '@emotion/react';
 
-import { CurrentProvider, KakaoMapProvider, Layout } from '@components';
+import { Layout } from '@components';
+import { CurrentProvider, KakaoMapProvider } from '@contexts';
 import { globalStyle } from '@styles';
 
 const App = ({ Component, pageProps }) => {

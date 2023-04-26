@@ -3,8 +3,8 @@ import styled from '@emotion/styled';
 
 import { Text } from '../Text';
 import { Button } from '../Button';
-import { CurrentContext } from '../CurrentProvider';
 
+import { CurrentContext } from '@contexts';
 import { COLOR, FONT_SIZE, FONT_WEIGHT } from '@styles';
 
 export const Information = ({ title }) => {

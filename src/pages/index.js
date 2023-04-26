@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useRef } from 'react';
 
-import { KakaoMapContext, Information } from '@components';
+import { Information } from '@components';
+import { KakaoMapContext } from '@contexts';
 import { useMarker } from '@hooks';
 
 const Home = () => {

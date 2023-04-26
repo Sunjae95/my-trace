@@ -1,6 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useState } from 'react';
 
-import { KakaoMapContext } from '../KakaoMapProvider';
+import { KakaoMapContext } from '../KakaoMap';
 
 export const CurrentContext = createContext(null);
 
