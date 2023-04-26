@@ -1,8 +1,8 @@
 import React, { useContext, useEffect, useRef } from 'react';
 
-import { KakaoMapContext } from '@components';
+import { Information } from '@components';
+import { KakaoMapContext } from '@contexts';
 import { useMarker } from '@hooks';
-import { Information } from 'src/components/Information';
 
 const Home = () => {
   const ref = useRef(null);

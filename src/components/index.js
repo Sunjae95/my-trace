@@ -1,4 +1,4 @@
 export * from './Button';
-export * from './KakaoMapProvider';
+export * from './Information';
 export * from './Layout';
 export * from './Text';

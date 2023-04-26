@@ -1,11 +1,12 @@
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 
-import { KakaoMapContext } from '@components';
+import { CurrentContext, KakaoMapContext } from '@contexts';
 
 const IMAGE_SRC = 'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png';
 
 export const useMarker = () => {
   const { kakaoMap } = useContext(KakaoMapContext);
+  const { setCurrent } = useContext(CurrentContext);
   const [markerList, setMarkerList] = useState([]);
 
   const markerSize = useMemo(() => (kakaoMap ? new kakao.maps.Size(24, 35) : null), [kakaoMap]);
@@ -16,9 +17,9 @@ export const useMarker = () => {
 
   const handleClickMarker = useCallback(
     (marker) => () => {
-      console.log('handleClickMarker', marker);
+      setCurrent(marker.getPosition());
     },
-    []
+    [setCurrent]
   );
 
   const handleAddMarker = useCallback(() => {
@@ -33,7 +34,7 @@ export const useMarker = () => {
   const handleRemoveMarker = useCallback(() => {
     markerList.forEach((marker) => {
       marker.setMap(null);
-      kakao.maps.event.addListener(marker, 'click', handleClickMarker(marker));
+      kakao.maps.event.removeListener(marker, 'click', handleClickMarker(marker));
     });
   }, [markerList, handleClickMarker]);
 
