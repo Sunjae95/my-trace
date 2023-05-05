@@ -1,48 +1,28 @@
-import React, { useContext, useEffect, useRef } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 
-import { Information } from '@components';
+import { Information, Map } from '@components';
 import { KakaoMapContext } from '@contexts';
-import { useMarker } from '@hooks';
 
 const Home = () => {
-  const ref = useRef(null);
-  const { kakaoMap, handleDrawMap } = useContext(KakaoMapContext);
-  const { handleSettingMarker } = useMarker();
+  const [current, setCurrent] = useState(null);
+  const { kakaoMap } = useContext(KakaoMapContext);
 
-  useEffect(() => {
-    handleDrawMap(ref.current);
-  }, [handleDrawMap]);
+  const handleClickMap = useCallback((event) => setCurrent(event.latLng), []);
 
   useEffect(() => {
     if (!kakaoMap) return;
 
-    handleSettingMarker([
-      {
-        title: '카카오',
-        latlng: new kakao.maps.LatLng(33.450705, 126.570677),
-      },
-      {
-        title: '생태연못',
-        latlng: new kakao.maps.LatLng(33.450936, 126.569477),
-      },
-      {
-        title: '텃밭',
-        latlng: new kakao.maps.LatLng(33.450879, 126.56994),
-      },
-      {
-        title: '근린공원',
-        latlng: new kakao.maps.LatLng(33.451393, 126.570738),
-      },
-    ]);
-  }, [kakaoMap, handleSettingMarker]);
+    kakao.maps.event.addListener(kakaoMap, 'click', handleClickMap);
+    return () => {
+      kakao.maps.event.removeListener(kakaoMap, 'click', handleClickMap);
+    };
+  }, [kakaoMap, handleClickMap]);
+
   return (
-    <main>
-      <div
-        ref={ref}
-        style={{ width: '500px', height: '400px' }}
-      ></div>
-      <Information />
-    </main>
+    <>
+      <Map current={current} />
+      <Information current={current} />
+    </>
   );
 };
 
