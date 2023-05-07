@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo, useCallback, useState } from 'react';
 import styled from '@emotion/styled';
 
 import { Button } from '../Button';
@@ -6,22 +6,67 @@ import { Text } from '../Text';
 
 import { COLOR, FONT_SIZE, FONT_WEIGHT } from '@styles';
 
-export const Information = ({ title = '', current }) => {
+export const Information = memo(({ current, markerList, onFetchMarkerList }) => {
+  const [title, setTitle] = useState('');
+
+  const handleChangeTitle = (e) => {
+    setTitle(e.target.value);
+  };
+
+  const handleAddMarker = useCallback(() => {
+    localStorage.setItem('markerList', JSON.stringify([...markerList, { ...current, title }]));
+    setTitle('');
+    onFetchMarkerList();
+  }, [title, markerList, current, onFetchMarkerList]);
+
+  const handleDeleteMarker = useCallback(() => {
+    localStorage.setItem(
+      'markerList',
+      JSON.stringify(
+        markerList.filter(
+          ({ latitude, longitude }) => !(latitude === current.latitude && longitude === current.longitude)
+        )
+      )
+    );
+
+    onFetchMarkerList();
+  }, [current, markerList, onFetchMarkerList]);
+
   return (
     <Container>
-      <TextWrapper>
-        <Text
-          text={title ?? '제목'}
-          weight={FONT_WEIGHT.bold}
-          size={FONT_SIZE.large}
-        />
-      </TextWrapper>
-      <TextWrapper>
-        <Text
-          text={current ? `경도${current.La} 위도${current.Ma}` : null}
-          color={COLOR.grey}
-        />
-      </TextWrapper>
+      {current?.title ? (
+        <TitleContainer>
+          <Text
+            text={current.title}
+            weight={FONT_WEIGHT.bold}
+            size={FONT_SIZE.large}
+          />
+          <Button
+            color={COLOR.white}
+            onClick={handleDeleteMarker}
+          >
+            삭제
+          </Button>
+        </TitleContainer>
+      ) : (
+        <TitleContainer>
+          <input
+            placeholder="제목을 입력해주세요"
+            value={title}
+            onChange={handleChangeTitle}
+          />
+          <Button
+            color={COLOR.white}
+            onClick={handleAddMarker}
+          >
+            추가
+          </Button>
+        </TitleContainer>
+      )}
+      <Text
+        text={current ? `위도${current.latitude} 경도${current.longitude}` : null}
+        color={COLOR.grey}
+      />
       <Button
         size="large"
         disabled
@@ -30,7 +75,7 @@ export const Information = ({ title = '', current }) => {
       </Button>
     </Container>
   );
-};
+});
 
 const Container = styled.div`
   display: flex;
@@ -38,7 +83,8 @@ const Container = styled.div`
   gap: 8px;
 `;
 
-const TextWrapper = styled.div`
+const TitleContainer = styled.div`
   display: flex;
-  gap: 8px;
+  justify-content: space-between;
+  align-items: center;
 `;
