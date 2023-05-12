@@ -3,7 +3,7 @@ import React, { memo, useContext, useEffect, useMemo, useRef } from 'react';
 import { KakaoMapContext } from '@contexts';
 import { useMarker } from '@hooks';
 
-export const Map = memo(({ current, markerList, setCurrent }) => {
+export const Map = memo(({ current, markerList, onClickMarker }) => {
   const ref = useRef(null);
   const { kakaoMap, handleDrawMap } = useContext(KakaoMapContext);
 
@@ -44,7 +44,7 @@ export const Map = memo(({ current, markerList, setCurrent }) => {
       marker.setMap(kakaoMap);
       const position = marker.getPosition();
       handleAddClickEvent(marker, () =>
-        setCurrent({ title, latitude: position.getLat(), longitude: position.getLng() })
+        onClickMarker({ title, latitude: position.getLat(), longitude: position.getLng() })
       );
     });
 
@@ -52,12 +52,12 @@ export const Map = memo(({ current, markerList, setCurrent }) => {
       markers.forEach(({ title, marker }) => {
         const position = marker.getPosition();
         handleRemoveClickEvent(marker, () =>
-          setCurrent({ title, latitude: position.getLat(), longitude: position.getLng() })
+          onClickMarker({ title, latitude: position.getLat(), longitude: position.getLng() })
         );
         marker.setMap(null);
       });
     };
-  }, [kakaoMap, markers, handleAddClickEvent, handleRemoveClickEvent, setCurrent]);
+  }, [kakaoMap, markers, handleAddClickEvent, handleRemoveClickEvent, onClickMarker]);
 
   useEffect(() => {
     handleDrawMap(ref.current);
