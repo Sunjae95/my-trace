@@ -3,13 +3,14 @@ import styled from '@emotion/styled';
 
 import { COLOR, FONT_SIZE } from '@styles';
 
-export const Button = ({ block, size = 'middle', color, disabled = false, children }) => {
+export const Button = ({ block, size = 'middle', color, disabled = false, onClick, children }) => {
   return (
     <StyledButton
       disabled={disabled}
       block={block}
       buttonColor={color}
       size={size}
+      onClick={onClick}
     >
       {children}
     </StyledButton>

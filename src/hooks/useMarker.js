@@ -1,61 +1,43 @@
-import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { useCallback, useContext } from 'react';
 
-import { CurrentContext, KakaoMapContext } from '@contexts';
-
+import { KakaoMapContext } from '@contexts';
+// NOTE 마커이미지가 더 필요하다면 상수화할 것
 const IMAGE_SRC = 'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png';
 
 export const useMarker = () => {
   const { kakaoMap } = useContext(KakaoMapContext);
-  const { setCurrent } = useContext(CurrentContext);
-  const [markerList, setMarkerList] = useState([]);
 
-  const markerSize = useMemo(() => (kakaoMap ? new kakao.maps.Size(24, 35) : null), [kakaoMap]);
-  const markerImage = useMemo(
-    () => (markerSize ? new kakao.maps.MarkerImage(IMAGE_SRC, markerSize) : markerSize),
-    [markerSize]
-  );
+  const handleAddClickEvent = useCallback(
+    (marker, onClick) => {
+      if (!kakaoMap) return;
 
-  const handleClickMarker = useCallback(
-    (marker) => () => {
-      setCurrent(marker.getPosition());
+      kakao.maps.event.addListener(marker, 'click', onClick);
     },
-    [setCurrent]
+    [kakaoMap]
   );
 
-  const handleAddMarker = useCallback(() => {
-    if (!kakaoMap) return;
+  const handleRemoveClickEvent = useCallback(
+    (marker, onClick) => {
+      if (!kakaoMap) return;
 
-    markerList.forEach((marker) => {
-      marker.setMap(kakaoMap);
-      kakao.maps.event.addListener(marker, 'click', handleClickMarker(marker));
-    });
-  }, [kakaoMap, markerList, handleClickMarker]);
-
-  const handleRemoveMarker = useCallback(() => {
-    markerList.forEach((marker) => {
-      marker.setMap(null);
-      kakao.maps.event.removeListener(marker, 'click', handleClickMarker(marker));
-    });
-  }, [markerList, handleClickMarker]);
-
-  const handleSettingMarker = useCallback(
-    (infoList) =>
-      setMarkerList(
-        infoList.map(
-          (info) =>
-            new kakao.maps.Marker({
-              position: info.latlng,
-              image: markerImage,
-            })
-        )
-      ),
-    [markerImage]
+      kakao.maps.event.removeListener(marker, 'click', onClick);
+    },
+    [kakaoMap]
   );
 
-  useEffect(() => {
-    handleAddMarker();
-    return () => handleRemoveMarker();
-  }, [handleAddMarker, handleRemoveMarker]);
+  const handleCreateMarker = useCallback(
+    ({ latitude, longitude, width = 24, height = 35, src = IMAGE_SRC }) => {
+      if (!kakaoMap) return;
 
-  return { handleSettingMarker };
+      const marker = new kakao.maps.Marker({
+        position: new kakao.maps.LatLng(latitude, longitude),
+        image: new kakao.maps.MarkerImage(src, new kakao.maps.Size(width, height)),
+      });
+
+      return marker;
+    },
+    [kakaoMap]
+  );
+
+  return { handleCreateMarker, handleAddClickEvent, handleRemoveClickEvent };
 };

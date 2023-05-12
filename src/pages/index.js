@@ -1,48 +1,87 @@
-import React, { useContext, useEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
-import { Information } from '@components';
-import { KakaoMapContext } from '@contexts';
-import { useMarker } from '@hooks';
+import { Information, Map } from '@components';
 
 const Home = () => {
-  const ref = useRef(null);
-  const { kakaoMap, handleDrawMap } = useContext(KakaoMapContext);
-  const { handleSettingMarker } = useMarker();
+  const [isEditable, setIsEditable] = useState(false);
+  const [current, setCurrent] = useState(null);
+  const [markerList, setMarkerList] = useState([]);
+
+  // NOTE Data Fetching
+  const getMarkerListFromStorage = useCallback(() => {
+    const fetchedMarkerList = JSON.parse(localStorage.getItem('markerList')) ?? [];
+    setMarkerList(fetchedMarkerList);
+  }, []);
+
+  const setMarkerListFromStorage = useCallback(
+    (marker) => localStorage.setItem('markerList', JSON.stringify(marker)),
+    []
+  );
 
   useEffect(() => {
-    handleDrawMap(ref.current);
-  }, [handleDrawMap]);
+    getMarkerListFromStorage();
+  }, [getMarkerListFromStorage]);
 
-  useEffect(() => {
-    if (!kakaoMap) return;
+  const handleClickMarker = useCallback((marker) => {
+    setIsEditable(false);
+    setCurrent(marker);
+  }, []);
 
-    handleSettingMarker([
-      {
-        title: '카카오',
-        latlng: new kakao.maps.LatLng(33.450705, 126.570677),
-      },
-      {
-        title: '생태연못',
-        latlng: new kakao.maps.LatLng(33.450936, 126.569477),
-      },
-      {
-        title: '텃밭',
-        latlng: new kakao.maps.LatLng(33.450879, 126.56994),
-      },
-      {
-        title: '근린공원',
-        latlng: new kakao.maps.LatLng(33.451393, 126.570738),
-      },
-    ]);
-  }, [kakaoMap, handleSettingMarker]);
+  // NOTE Client
+  const handleChangeEditable = useCallback(() => setIsEditable((isEditable) => !isEditable), []);
+
+  const handleChangeCurrentTitle = useCallback((e) => {
+    setCurrent((current) => ({ ...current, title: e.target.value }));
+  }, []);
+
+  const handleUpdateMarkerList = useCallback(
+    (marker) => {
+      const isDuplicate = markerList.some(
+        ({ latitude, longitude }) => latitude === marker.latitude && longitude === marker.longitude
+      );
+      const updatedMarkerList = isDuplicate
+        ? markerList.map(({ title, latitude, longitude }) =>
+            latitude === marker.latitude && longitude === marker.longitude ? marker : { title, latitude, longitude }
+          )
+        : [...markerList, marker];
+
+      setMarkerListFromStorage(updatedMarkerList);
+      getMarkerListFromStorage();
+      setIsEditable(false);
+      setCurrent(marker);
+    },
+    [markerList, getMarkerListFromStorage, setMarkerListFromStorage]
+  );
+
+  const handleDeleteMarker = useCallback(
+    (marker) => {
+      const removedMarkerList = markerList.filter(
+        ({ latitude, longitude }) => !(latitude === marker.latitude && longitude === marker.longitude)
+      );
+      setMarkerListFromStorage(removedMarkerList);
+      getMarkerListFromStorage();
+      setIsEditable(false);
+      setCurrent(null);
+    },
+    [markerList, getMarkerListFromStorage, setMarkerListFromStorage]
+  );
+
   return (
-    <main>
-      <div
-        ref={ref}
-        style={{ width: '500px', height: '400px' }}
-      ></div>
-      <Information />
-    </main>
+    <>
+      <Map
+        current={current}
+        markerList={markerList}
+        onClickMarker={handleClickMarker}
+      />
+      <Information
+        isEditable={isEditable}
+        onChangeEditable={handleChangeEditable}
+        current={current}
+        onChangeCurrentTitle={handleChangeCurrentTitle}
+        onUpdateMarkerList={handleUpdateMarkerList}
+        onDeleteMarker={handleDeleteMarker}
+      />
+    </>
   );
 };
 

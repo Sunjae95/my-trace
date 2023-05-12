@@ -1,56 +1,100 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import React, { memo } from 'react';
 import styled from '@emotion/styled';
 
-import { Text } from '../Text';
 import { Button } from '../Button';
+import { Text } from '../Text';
 
-import { CurrentContext } from '@contexts';
 import { COLOR, FONT_SIZE, FONT_WEIGHT } from '@styles';
-import { kakaoHttp } from '@utils';
 
-export const Information = ({ title }) => {
-  const { current } = useContext(CurrentContext);
-  const [address, setAddress] = useState('현재 위치를 클릭해주세요.');
-
-  const handleSearch = useCallback(async (longitude, latitude) => {
-    try {
-      const { documents } = await kakaoHttp.getConvertedAddress(longitude, latitude);
-      setAddress(documents[0].address.address_name);
-    } catch {
-      setAddress('주소를 불러오지 못했습니다.');
+export const Information = memo(
+  ({ isEditable, current, onChangeCurrentTitle, onUpdateMarkerList, onDeleteMarker, onChangeEditable }) => {
+    if (!current) {
+      return (
+        <Container>
+          <Text
+            text="지도위의 마커나 지도를 클릭해주세요."
+            weight={FONT_WEIGHT.bold}
+            size={FONT_SIZE.large}
+          />
+          <Button
+            size="large"
+            disabled
+          >
+            즐겨찾기 보기
+          </Button>
+        </Container>
+      );
     }
-  }, []);
 
-  useEffect(() => {
-    if (!(current?.La && current?.Ma) || !process.env) return;
+    if (!isEditable) {
+      return (
+        <Container>
+          <TitleContainer>
+            <Text
+              text={current.title || '등록된 마커가 없습니다.'}
+              weight={FONT_WEIGHT.bold}
+              size={FONT_SIZE.large}
+            />
+            <ButtonWrapper>
+              <Button
+                color={COLOR.white}
+                onClick={onChangeEditable}
+              >
+                {current.title ? '수정' : '생성'}
+              </Button>
+              {current.title && (
+                <Button
+                  color={COLOR.white}
+                  onClick={() => onDeleteMarker(current)}
+                >
+                  삭제
+                </Button>
+              )}
+            </ButtonWrapper>
+          </TitleContainer>
+          <Text
+            text={current ? `위도${current.latitude} 경도${current.longitude}` : null}
+            color={COLOR.grey}
+          />
+          <Button
+            size="large"
+            disabled
+          >
+            즐겨찾기 보기
+          </Button>
+        </Container>
+      );
+    }
 
-    handleSearch(current.La, current.Ma);
-  }, [current, handleSearch]);
-
-  return (
-    <Container>
-      <TextWrapper>
+    return (
+      <Container>
+        <TitleContainer>
+          <input
+            placeholder="제목을 입력해주세요"
+            value={current.title}
+            onChange={onChangeCurrentTitle}
+          />
+          <Button
+            color={COLOR.white}
+            onClick={() => onUpdateMarkerList(current)}
+          >
+            저장
+          </Button>
+        </TitleContainer>
         <Text
-          text={title ?? '제목'}
-          weight={FONT_WEIGHT.bold}
-          size={FONT_SIZE.large}
-        />
-      </TextWrapper>
-      <TextWrapper>
-        <Text
-          text={address}
+          text={current ? `위도${current.latitude} 경도${current.longitude}` : null}
           color={COLOR.grey}
         />
-      </TextWrapper>
-      <Button
-        size="large"
-        disabled
-      >
-        즐겨찾기 보기
-      </Button>
-    </Container>
-  );
-};
+        <Button
+          size="large"
+          disabled
+        >
+          즐겨찾기 보기
+        </Button>
+      </Container>
+    );
+  }
+);
 
 const Container = styled.div`
   display: flex;
@@ -58,7 +102,14 @@ const Container = styled.div`
   gap: 8px;
 `;
 
-const TextWrapper = styled.div`
+const TitleContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+const ButtonWrapper = styled.div`
   display: flex;
   gap: 8px;
+  align-items: center;
 `;
