@@ -1,10 +1,8 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 import { Information, Map } from '@components';
-import { KakaoMapContext } from '@contexts';
 
 const Home = () => {
-  const { kakaoMap } = useContext(KakaoMapContext);
   const [isEditable, setIsEditable] = useState(false);
   const [current, setCurrent] = useState(null);
   const [markerList, setMarkerList] = useState([]);
@@ -24,30 +22,12 @@ const Home = () => {
     getMarkerListFromStorage();
   }, [getMarkerListFromStorage]);
 
-  // NOTE Map Event Bind
-  const clickMap = useCallback((event) => {
-    setIsEditable(false);
-    setCurrent({
-      title: '',
-      latitude: event.latLng.getLat(),
-      longitude: event.latLng.getLng(),
-    });
-  }, []);
-
-  useEffect(() => {
-    if (!kakaoMap) return;
-
-    kakao.maps.event.addListener(kakaoMap, 'click', clickMap);
-    return () => {
-      kakao.maps.event.removeListener(kakaoMap, 'click', clickMap);
-    };
-  }, [kakaoMap, clickMap]);
-
   const handleClickMarker = useCallback((marker) => {
     setIsEditable(false);
     setCurrent(marker);
   }, []);
 
+  // NOTE Client
   const handleChangeEditable = useCallback(() => setIsEditable((isEditable) => !isEditable), []);
 
   const handleChangeCurrentTitle = useCallback((e) => {
