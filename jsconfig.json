@@ -9,7 +9,8 @@
       "@styles": ["./src/styles/index"],
       "@hooks": ["./src/hooks/index"],
       "@contexts": ["./src/contexts/index"],
-      "@utils": ["./src/utils/index"]
+      "@utils": ["./src/utils/index"],
+      "@services": ["./src/services/index"]
     }
   }
 }
