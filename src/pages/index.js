@@ -19,7 +19,10 @@ const Home = () => {
       try {
         await createMarkerAPI(option);
         await fetchMarkerList();
-      } catch {}
+      } catch {
+      } finally {
+        setIsEditable(false);
+      }
     },
     [fetchMarkerList]
   );
@@ -29,8 +32,10 @@ const Home = () => {
       try {
         await updateMarkerAPI(id, option);
         await fetchMarkerList();
+      } catch {
+      } finally {
         setIsEditable(false);
-      } catch {}
+      }
     },
     [fetchMarkerList]
   );
