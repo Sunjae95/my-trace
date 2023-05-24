@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 
 import { Information, Map } from '@components';
-import { getMarkerListAPI, updateMarkerAPI } from '@services';
+import { createMarkerAPI, getMarkerListAPI, updateMarkerAPI } from '@services';
 
 const Home = () => {
   const [isEditable, setIsEditable] = useState(false);
@@ -13,6 +13,16 @@ const Home = () => {
     const data = await getMarkerListAPI();
     setMarkerList(data);
   }, []);
+
+  const createMarker = useCallback(
+    async (option) => {
+      try {
+        await createMarkerAPI(option);
+        await fetchMarkerList();
+      } catch {}
+    },
+    [fetchMarkerList]
+  );
 
   const updateMarker = useCallback(
     async (id, option) => {
@@ -50,13 +60,13 @@ const Home = () => {
     (marker) => {
       const { id, ...option } = marker;
       if (id) {
-        // 수정
         updateMarker(id, option);
-      } else {
-        // 생성
+        return;
       }
+
+      createMarker(option);
     },
-    [updateMarker]
+    [createMarker, updateMarker]
   );
 
   const handleDeleteMarker = useCallback(
