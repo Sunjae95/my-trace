@@ -1,18 +1,29 @@
 import React, { useCallback, useEffect, useState } from 'react';
 
 import { Information, Map } from '@components';
-import { getMarkerListAPI } from '@services';
+import { getMarkerListAPI, updateMarkerAPI } from '@services';
 
 const Home = () => {
   const [isEditable, setIsEditable] = useState(false);
   const [current, setCurrent] = useState(null);
   const [markerList, setMarkerList] = useState([]);
 
-  // NOTE Data Fetching
+  // API 관련 함수
   const fetchMarkerList = useCallback(async () => {
     const data = await getMarkerListAPI();
     setMarkerList(data);
   }, []);
+
+  const updateMarker = useCallback(
+    async (id, option) => {
+      try {
+        await updateMarkerAPI(id, option);
+        await fetchMarkerList();
+        setIsEditable(false);
+      } catch {}
+    },
+    [fetchMarkerList]
+  );
 
   const setMarkerListFromStorage = useCallback(
     (marker) => localStorage.setItem('markerList', JSON.stringify(marker)),
@@ -37,21 +48,15 @@ const Home = () => {
 
   const handleUpdateMarkerList = useCallback(
     (marker) => {
-      const isDuplicate = markerList.some(
-        ({ latitude, longitude }) => latitude === marker.latitude && longitude === marker.longitude
-      );
-      const updatedMarkerList = isDuplicate
-        ? markerList.map(({ title, latitude, longitude }) =>
-            latitude === marker.latitude && longitude === marker.longitude ? marker : { title, latitude, longitude }
-          )
-        : [...markerList, marker];
-
-      setMarkerListFromStorage(updatedMarkerList);
-      fetchMarkerList();
-      setIsEditable(false);
-      setCurrent(marker);
+      const { id, ...option } = marker;
+      if (id) {
+        // 수정
+        updateMarker(id, option);
+      } else {
+        // 생성
+      }
     },
-    [markerList, fetchMarkerList, setMarkerListFromStorage]
+    [updateMarker]
   );
 
   const handleDeleteMarker = useCallback(
