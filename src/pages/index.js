@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 
 import { Information, Map } from '@components';
+import { getMarkerList } from '@services';
 
 const Home = () => {
   const [isEditable, setIsEditable] = useState(false);
@@ -8,9 +9,9 @@ const Home = () => {
   const [markerList, setMarkerList] = useState([]);
 
   // NOTE Data Fetching
-  const getMarkerListFromStorage = useCallback(() => {
-    const fetchedMarkerList = JSON.parse(localStorage.getItem('markerList')) ?? [];
-    setMarkerList(fetchedMarkerList);
+  const fetchMarkerList = useCallback(async () => {
+    const data = await getMarkerList();
+    setMarkerList(data);
   }, []);
 
   const setMarkerListFromStorage = useCallback(
@@ -19,8 +20,8 @@ const Home = () => {
   );
 
   useEffect(() => {
-    getMarkerListFromStorage();
-  }, [getMarkerListFromStorage]);
+    fetchMarkerList();
+  }, [fetchMarkerList]);
 
   const handleClickMarker = useCallback((marker) => {
     setIsEditable(false);
@@ -46,11 +47,11 @@ const Home = () => {
         : [...markerList, marker];
 
       setMarkerListFromStorage(updatedMarkerList);
-      getMarkerListFromStorage();
+      fetchMarkerList();
       setIsEditable(false);
       setCurrent(marker);
     },
-    [markerList, getMarkerListFromStorage, setMarkerListFromStorage]
+    [markerList, fetchMarkerList, setMarkerListFromStorage]
   );
 
   const handleDeleteMarker = useCallback(
@@ -59,11 +60,11 @@ const Home = () => {
         ({ latitude, longitude }) => !(latitude === marker.latitude && longitude === marker.longitude)
       );
       setMarkerListFromStorage(removedMarkerList);
-      getMarkerListFromStorage();
+      fetchMarkerList();
       setIsEditable(false);
       setCurrent(null);
     },
-    [markerList, getMarkerListFromStorage, setMarkerListFromStorage]
+    [markerList, fetchMarkerList, setMarkerListFromStorage]
   );
 
   return (
