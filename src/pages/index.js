@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 
 import { Information, Map } from '@components';
-import { getMarkerList } from '@services';
+import { getMarkerListAPI } from '@services';
 
 const Home = () => {
   const [isEditable, setIsEditable] = useState(false);
@@ -10,7 +10,7 @@ const Home = () => {
 
   // NOTE Data Fetching
   const fetchMarkerList = useCallback(async () => {
-    const data = await getMarkerList();
+    const data = await getMarkerListAPI();
     setMarkerList(data);
   }, []);
 
