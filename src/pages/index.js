@@ -53,11 +53,6 @@ const Home = () => {
     [fetchMarkerList]
   );
 
-  const setMarkerListFromStorage = useCallback(
-    (marker) => localStorage.setItem('markerList', JSON.stringify(marker)),
-    []
-  );
-
   useEffect(() => {
     fetchMarkerList();
   }, [fetchMarkerList]);
