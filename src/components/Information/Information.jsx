@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React, { memo, useCallback } from 'react';
 import styled from '@emotion/styled';
 
 import { Button } from '../Button';
@@ -7,7 +7,19 @@ import { Text } from '../Text';
 import { COLOR, FONT_SIZE, FONT_WEIGHT } from '@styles';
 
 export const Information = memo(
-  ({ isEditable, current, onChangeCurrentTitle, onUpdateMarkerList, onDeleteMarker, onChangeEditable }) => {
+  ({ isEditable, current, onChangeEditable, onChangeCurrentTitle, onCreateMarker, onUpdateMarker, onDeleteMarker }) => {
+    const handleSaveMarker = useCallback(
+      ({ id, ...option }) => {
+        if (id) {
+          onUpdateMarker(id, option);
+          return;
+        }
+
+        onCreateMarker(option);
+      },
+      [onCreateMarker, onUpdateMarker]
+    );
+
     if (!current) {
       return (
         <Container>
@@ -76,7 +88,7 @@ export const Information = memo(
           />
           <Button
             color={COLOR.white}
-            onClick={() => onUpdateMarkerList(current)}
+            onClick={() => handleSaveMarker(current)}
           >
             저장
           </Button>
