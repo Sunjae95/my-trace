@@ -31,7 +31,7 @@ export const Information = memo(
         <Container>
           <TitleContainer>
             <Text
-              text={current.title || '등록된 마커가 없습니다.'}
+              text={current.id ? current.title : '등록된 마커가 없습니다.'}
               weight={FONT_WEIGHT.bold}
               size={FONT_SIZE.large}
             />
@@ -40,12 +40,12 @@ export const Information = memo(
                 color={COLOR.white}
                 onClick={onChangeEditable}
               >
-                {current.title ? '수정' : '생성'}
+                {current.id ? '수정' : '생성'}
               </Button>
-              {current.title && (
+              {current.id && (
                 <Button
                   color={COLOR.white}
-                  onClick={() => onDeleteMarker(current)}
+                  onClick={() => onDeleteMarker(current.id)}
                 >
                   삭제
                 </Button>
