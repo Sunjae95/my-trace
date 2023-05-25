@@ -28,32 +28,34 @@ export const Map = memo(({ current, markerList, onClickMarker }) => {
     };
   }, [currentMarker, kakaoMap, handleRemoveClickEvent]);
 
-  // Marker List
+  /**
+   * @note 이벤트바인딩할 때 새로운 kakao Marker가 필요하므로 비즈니스로직을 태우기위해 변수선언
+   */
   const markers = useMemo(() => {
     if (markerList.length === 0) return [];
 
-    return markerList.map(({ title, latitude, longitude }) => {
+    return markerList.map(({ latitude, longitude, ...option }) => {
       const marker = handleCreateMarker({ latitude, longitude });
 
-      return { title: title, marker };
+      return { marker, ...option };
     });
   }, [markerList, handleCreateMarker]);
 
   useEffect(() => {
     if (!kakaoMap || markers.length === 0) return;
-    markers.forEach(({ title, marker }) => {
+    markers.forEach(({ marker, ...option }) => {
       marker.setMap(kakaoMap);
       const position = marker.getPosition();
       handleAddClickEvent(marker, () =>
-        onClickMarker({ title, latitude: position.getLat(), longitude: position.getLng() })
+        onClickMarker({ latitude: position.getLat(), longitude: position.getLng(), ...option })
       );
     });
 
     return () => {
-      markers.forEach(({ title, marker }) => {
+      markers.forEach(({ marker, ...option }) => {
         const position = marker.getPosition();
         handleRemoveClickEvent(marker, () =>
-          onClickMarker({ title, latitude: position.getLat(), longitude: position.getLng() })
+          onClickMarker({ latitude: position.getLat(), longitude: position.getLng(), ...option })
         );
         marker.setMap(null);
       });
@@ -63,7 +65,7 @@ export const Map = memo(({ current, markerList, onClickMarker }) => {
   // NOTE Map Event Bind
   const clickMap = useCallback(
     (event) => {
-      onClickMarker({ title: '', latitude: event.latLng.getLat(), longitude: event.latLng.getLng() });
+      onClickMarker({ id: null, title: '', latitude: event.latLng.getLat(), longitude: event.latLng.getLng() });
     },
     [onClickMarker]
   );

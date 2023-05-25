@@ -1,18 +1,44 @@
 import React, { useCallback, useEffect, useState } from 'react';
 
 import { Information, Map } from '@components';
-import { getMarkerList } from '@services';
+import { createMarkerAPI, getMarkerListAPI, updateMarkerAPI } from '@services';
 
 const Home = () => {
   const [isEditable, setIsEditable] = useState(false);
   const [current, setCurrent] = useState(null);
   const [markerList, setMarkerList] = useState([]);
 
-  // NOTE Data Fetching
+  // API 관련 함수
   const fetchMarkerList = useCallback(async () => {
-    const data = await getMarkerList();
+    const data = await getMarkerListAPI();
     setMarkerList(data);
   }, []);
+
+  const createMarker = useCallback(
+    async (option) => {
+      try {
+        await createMarkerAPI(option);
+        await fetchMarkerList();
+      } catch {
+      } finally {
+        setIsEditable(false);
+      }
+    },
+    [fetchMarkerList]
+  );
+
+  const updateMarker = useCallback(
+    async (id, option) => {
+      try {
+        await updateMarkerAPI(id, option);
+        await fetchMarkerList();
+      } catch {
+      } finally {
+        setIsEditable(false);
+      }
+    },
+    [fetchMarkerList]
+  );
 
   const setMarkerListFromStorage = useCallback(
     (marker) => localStorage.setItem('markerList', JSON.stringify(marker)),
@@ -37,21 +63,15 @@ const Home = () => {
 
   const handleUpdateMarkerList = useCallback(
     (marker) => {
-      const isDuplicate = markerList.some(
-        ({ latitude, longitude }) => latitude === marker.latitude && longitude === marker.longitude
-      );
-      const updatedMarkerList = isDuplicate
-        ? markerList.map(({ title, latitude, longitude }) =>
-            latitude === marker.latitude && longitude === marker.longitude ? marker : { title, latitude, longitude }
-          )
-        : [...markerList, marker];
+      const { id, ...option } = marker;
+      if (id) {
+        updateMarker(id, option);
+        return;
+      }
 
-      setMarkerListFromStorage(updatedMarkerList);
-      fetchMarkerList();
-      setIsEditable(false);
-      setCurrent(marker);
+      createMarker(option);
     },
-    [markerList, fetchMarkerList, setMarkerListFromStorage]
+    [createMarker, updateMarker]
   );
 
   const handleDeleteMarker = useCallback(

@@ -1,12 +1,19 @@
-import { addDoc, collection, getDocs } from 'firebase/firestore';
+import { addDoc, collection, doc, getDocs, updateDoc } from 'firebase/firestore';
 
 import { db } from '@utils';
 
-export const createMarker = async (marker) => {
-  await addDoc(collection(db, 'marker'), marker);
+const markerReference = collection(db, 'marker');
+
+export const createMarkerAPI = async (marker) => {
+  await addDoc(markerReference, marker);
 };
 
-export const getMarkerList = async () => {
-  const { docs } = await getDocs(collection(db, 'marker'));
+export const updateMarkerAPI = async (id, option) => {
+  await updateDoc(doc(markerReference, id), option);
+};
+
+export const getMarkerListAPI = async () => {
+  const { docs } = await getDocs(markerReference);
+
   return docs.map((doc) => ({ id: doc.id, ...doc.data() }));
 };
