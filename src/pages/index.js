@@ -40,6 +40,19 @@ const Home = () => {
     [fetchMarkerList]
   );
 
+  const handleDeleteMarker = useCallback(
+    async (id) => {
+      try {
+        await deleteMarkerAPI(id);
+        await fetchMarkerList();
+        setCurrent(null);
+      } catch {
+      } finally {
+      }
+    },
+    [fetchMarkerList]
+  );
+
   const setMarkerListFromStorage = useCallback(
     (marker) => localStorage.setItem('markerList', JSON.stringify(marker)),
     []
@@ -72,19 +85,6 @@ const Home = () => {
       createMarker(option);
     },
     [createMarker, updateMarker]
-  );
-
-  const handleDeleteMarker = useCallback(
-    (marker) => {
-      const removedMarkerList = markerList.filter(
-        ({ latitude, longitude }) => !(latitude === marker.latitude && longitude === marker.longitude)
-      );
-      setMarkerListFromStorage(removedMarkerList);
-      fetchMarkerList();
-      setIsEditable(false);
-      setCurrent(null);
-    },
-    [markerList, fetchMarkerList, setMarkerListFromStorage]
   );
 
   return (
