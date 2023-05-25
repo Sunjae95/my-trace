@@ -1,4 +1,4 @@
-import { addDoc, collection, doc, getDocs, updateDoc } from 'firebase/firestore';
+import { addDoc, collection, deleteDoc, doc, getDocs, updateDoc } from 'firebase/firestore';
 
 import { db } from '@utils';
 
@@ -16,4 +16,8 @@ export const getMarkerListAPI = async () => {
   const { docs } = await getDocs(markerReference);
 
   return docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+};
+
+export const deleteMarkerAPI = async (id) => {
+  await deleteDoc(doc(markerReference, id));
 };

@@ -14,7 +14,7 @@ const Home = () => {
     setMarkerList(data);
   }, []);
 
-  const createMarker = useCallback(
+  const handleCreateMarker = useCallback(
     async (option) => {
       try {
         await createMarkerAPI(option);
@@ -27,7 +27,7 @@ const Home = () => {
     [fetchMarkerList]
   );
 
-  const updateMarker = useCallback(
+  const handleUpdateMarker = useCallback(
     async (id, option) => {
       try {
         await updateMarkerAPI(id, option);
@@ -40,52 +40,34 @@ const Home = () => {
     [fetchMarkerList]
   );
 
-  const setMarkerListFromStorage = useCallback(
-    (marker) => localStorage.setItem('markerList', JSON.stringify(marker)),
-    []
+  const handleDeleteMarker = useCallback(
+    async (id) => {
+      try {
+        await deleteMarkerAPI(id);
+        await fetchMarkerList();
+        setCurrent(null);
+      } catch {
+      } finally {
+      }
+    },
+    [fetchMarkerList]
   );
 
-  useEffect(() => {
-    fetchMarkerList();
-  }, [fetchMarkerList]);
-
+  // NOTE Client
   const handleClickMarker = useCallback((marker) => {
     setIsEditable(false);
     setCurrent(marker);
   }, []);
 
-  // NOTE Client
   const handleChangeEditable = useCallback(() => setIsEditable((isEditable) => !isEditable), []);
 
   const handleChangeCurrentTitle = useCallback((e) => {
     setCurrent((current) => ({ ...current, title: e.target.value }));
   }, []);
 
-  const handleUpdateMarkerList = useCallback(
-    (marker) => {
-      const { id, ...option } = marker;
-      if (id) {
-        updateMarker(id, option);
-        return;
-      }
-
-      createMarker(option);
-    },
-    [createMarker, updateMarker]
-  );
-
-  const handleDeleteMarker = useCallback(
-    (marker) => {
-      const removedMarkerList = markerList.filter(
-        ({ latitude, longitude }) => !(latitude === marker.latitude && longitude === marker.longitude)
-      );
-      setMarkerListFromStorage(removedMarkerList);
-      fetchMarkerList();
-      setIsEditable(false);
-      setCurrent(null);
-    },
-    [markerList, fetchMarkerList, setMarkerListFromStorage]
-  );
+  useEffect(() => {
+    fetchMarkerList();
+  }, [fetchMarkerList]);
 
   return (
     <>
@@ -96,10 +78,11 @@ const Home = () => {
       />
       <Information
         isEditable={isEditable}
-        onChangeEditable={handleChangeEditable}
         current={current}
+        onChangeEditable={handleChangeEditable}
         onChangeCurrentTitle={handleChangeCurrentTitle}
-        onUpdateMarkerList={handleUpdateMarkerList}
+        onCreateMarker={handleCreateMarker}
+        onUpdateMarker={handleUpdateMarker}
         onDeleteMarker={handleDeleteMarker}
       />
     </>
