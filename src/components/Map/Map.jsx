@@ -10,6 +10,7 @@ export const Map = memo(({ current, markerList, onClickMarker }) => {
 
   const { handleCreateMarker, handleAddClickEvent, handleRemoveClickEvent } = useMarker();
 
+  // NOTE 생성되지 않는 marker paint
   useEffect(() => {
     if (!current || current.id) return;
 
@@ -21,9 +22,7 @@ export const Map = memo(({ current, markerList, onClickMarker }) => {
     };
   }, [current, kakaoMap, handleCreateMarker]);
 
-  /**
-   * @note 이벤트바인딩할 때 새로운 kakao Marker가 필요하므로 비즈니스로직을 태우기위해 변수선언
-   */
+  // NOTE 이미 생성된 markerList paint
   useEffect(() => {
     if (!kakaoMap || markerList.length === 0) return;
 
@@ -53,6 +52,7 @@ export const Map = memo(({ current, markerList, onClickMarker }) => {
     };
   }, [kakaoMap, markerList, handleCreateMarker, handleAddClickEvent, handleRemoveClickEvent, onClickMarker]);
 
+  // NOTE 지도 click event bind
   useEffect(() => {
     if (!kakaoMap) return;
 
@@ -66,6 +66,7 @@ export const Map = memo(({ current, markerList, onClickMarker }) => {
     };
   }, [kakaoMap, onClickMarker]);
 
+  // NOTE 지도 draw
   useEffect(() => {
     handleDrawMap(ref.current);
   }, [handleDrawMap]);
