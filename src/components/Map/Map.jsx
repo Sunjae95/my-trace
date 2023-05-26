@@ -1,3 +1,5 @@
+/* eslint-disable no-undef */
+
 import React, { memo, useContext, useEffect, useMemo, useRef } from 'react';
 
 import { KakaoMapContext } from '@contexts';

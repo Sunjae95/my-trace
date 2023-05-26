@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import React, { createContext, useCallback, useState } from 'react';
 import Script from 'next/script';
 
