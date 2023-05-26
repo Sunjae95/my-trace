@@ -2,6 +2,8 @@
   "extends": ["next", "prettier"],
   "rules": {
     "react-hooks/exhaustive-deps": "error",
-    "react/display-name": "off"
+    "react/display-name": "off",
+    "no-unused-vars": "error",
+    "no-undef": "error"
   }
 }
