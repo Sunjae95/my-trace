@@ -1,10 +1,9 @@
 import React, { memo, useCallback } from 'react';
 import styled from '@emotion/styled';
 
-import { Button } from '../Button';
-import { Text } from '../Text';
-
 import { COLOR, FONT_SIZE, FONT_WEIGHT } from '@styles';
+
+import { Button, Text } from '../_base';
 
 export const Information = memo(
   ({ isEditable, current, onChangeEditable, onChangeCurrentTitle, onCreateMarker, onUpdateMarker, onDeleteMarker }) => {
