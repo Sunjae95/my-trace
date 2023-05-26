@@ -12,23 +12,16 @@ export const Map = memo(({ current, markerList, onClickMarker }) => {
 
   const { handleCreateMarker, handleAddClickEvent, handleRemoveClickEvent } = useMarker();
 
-  // Current Marker
-  const currentMarker = useMemo(() => {
-    if (!current) return null;
-
-    const { latitude, longitude } = current;
-    return handleCreateMarker({ latitude, longitude });
-  }, [current, handleCreateMarker]);
-
-  // NOTE 다른 마커 선택시 cleanUp 되는지 확인해볼 것
   useEffect(() => {
-    if (!currentMarker) return;
+    if (!current || current.id) return;
 
+    const currentMarker = handleCreateMarker({ latitude: current.latitude, longitude: current.longitude });
     currentMarker.setMap(kakaoMap);
+
     return () => {
       currentMarker.setMap(null);
     };
-  }, [currentMarker, kakaoMap, handleRemoveClickEvent]);
+  }, [current, kakaoMap, handleCreateMarker]);
 
   /**
    * @note 이벤트바인딩할 때 새로운 kakao Marker가 필요하므로 비즈니스로직을 태우기위해 변수선언
