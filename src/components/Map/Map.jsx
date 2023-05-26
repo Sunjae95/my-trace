@@ -1,6 +1,5 @@
 /* eslint-disable no-undef */
-
-import React, { memo, useContext, useEffect, useMemo, useRef } from 'react';
+import React, { memo, useContext, useEffect, useRef } from 'react';
 
 import { KakaoMapContext } from '@contexts';
 import { useMarker } from '@hooks';
@@ -25,36 +24,34 @@ export const Map = memo(({ current, markerList, onClickMarker }) => {
   /**
    * @note 이벤트바인딩할 때 새로운 kakao Marker가 필요하므로 비즈니스로직을 태우기위해 변수선언
    */
-  const markers = useMemo(() => {
-    if (markerList.length === 0) return [];
-
-    return markerList.map(({ latitude, longitude, ...option }) => {
-      const marker = handleCreateMarker({ latitude, longitude });
-
-      return { marker, ...option };
-    });
-  }, [markerList, handleCreateMarker]);
-
   useEffect(() => {
-    if (!kakaoMap || markers.length === 0) return;
+    if (!kakaoMap || markerList.length === 0) return;
+
+    const markers = markerList.map(({ latitude, longitude, ...option }) => ({
+      ...option,
+      marker: handleCreateMarker({ latitude, longitude }),
+    }));
+
     markers.forEach(({ marker, ...option }) => {
-      marker.setMap(kakaoMap);
       const position = marker.getPosition();
+
       handleAddClickEvent(marker, () =>
-        onClickMarker({ latitude: position.getLat(), longitude: position.getLng(), ...option })
+        onClickMarker({ ...option, latitude: position.getLat(), longitude: position.getLng() })
       );
+      marker.setMap(kakaoMap);
     });
 
     return () => {
       markers.forEach(({ marker, ...option }) => {
         const position = marker.getPosition();
+
         handleRemoveClickEvent(marker, () =>
-          onClickMarker({ latitude: position.getLat(), longitude: position.getLng(), ...option })
+          onClickMarker({ ...option, latitude: position.getLat(), longitude: position.getLng() })
         );
         marker.setMap(null);
       });
     };
-  }, [kakaoMap, markers, handleAddClickEvent, handleRemoveClickEvent, onClickMarker]);
+  }, [kakaoMap, markerList, handleCreateMarker, handleAddClickEvent, handleRemoveClickEvent, onClickMarker]);
 
   useEffect(() => {
     if (!kakaoMap) return;
