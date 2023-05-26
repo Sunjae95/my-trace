@@ -4,7 +4,6 @@ import React, { memo, useContext, useEffect, useMemo, useRef } from 'react';
 
 import { KakaoMapContext } from '@contexts';
 import { useMarker } from '@hooks';
-import { useCallback } from 'react';
 
 export const Map = memo(({ current, markerList, onClickMarker }) => {
   const ref = useRef(null);
@@ -57,22 +56,18 @@ export const Map = memo(({ current, markerList, onClickMarker }) => {
     };
   }, [kakaoMap, markers, handleAddClickEvent, handleRemoveClickEvent, onClickMarker]);
 
-  // NOTE Map Event Bind
-  const clickMap = useCallback(
-    (event) => {
-      onClickMarker({ id: null, title: '', latitude: event.latLng.getLat(), longitude: event.latLng.getLng() });
-    },
-    [onClickMarker]
-  );
-
   useEffect(() => {
     if (!kakaoMap) return;
 
-    kakao.maps.event.addListener(kakaoMap, 'click', clickMap);
+    const handleClickMap = ({ latLng }) =>
+      onClickMarker({ id: null, title: '', latitude: latLng.getLat(), longitude: latLng.getLng() });
+
+    kakao.maps.event.addListener(kakaoMap, 'click', handleClickMap);
+
     return () => {
-      kakao.maps.event.removeListener(kakaoMap, 'click', clickMap);
+      kakao.maps.event.removeListener(kakaoMap, 'click', handleClickMap);
     };
-  }, [kakaoMap, clickMap]);
+  }, [kakaoMap, onClickMarker]);
 
   useEffect(() => {
     handleDrawMap(ref.current);
