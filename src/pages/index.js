@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 
 import { Information, Map } from '@components';
-import { createMarkerAPI, getMarkerListAPI, updateMarkerAPI } from '@services';
+import { createMarkerAPI, deleteMarkerAPI, getMarkerListAPI, updateMarkerAPI } from '@services';
 
 const Home = () => {
   const [isEditable, setIsEditable] = useState(false);
