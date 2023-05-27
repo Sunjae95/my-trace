@@ -17,8 +17,9 @@ const Home = () => {
   const handleCreateMarker = useCallback(
     async (option) => {
       try {
-        await createMarkerAPI(option);
+        const { id } = await createMarkerAPI(option);
         await fetchMarkerList();
+        setCurrent((value) => ({ ...value, id }));
       } catch {
       } finally {
         setIsEditable(false);
