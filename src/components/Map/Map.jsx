@@ -1,8 +1,7 @@
-import React, { memo, useContext, useEffect, useMemo, useRef } from 'react';
+import React, { memo, useContext, useEffect, useRef } from 'react';
 
 import { KakaoMapContext } from '@contexts';
 import { useMarker } from '@hooks';
-import { useCallback } from 'react';
 
 export const Map = memo(({ current, markerList, onClickMarker }) => {
   const ref = useRef(null);
@@ -10,75 +9,63 @@ export const Map = memo(({ current, markerList, onClickMarker }) => {
 
   const { handleCreateMarker, handleAddClickEvent, handleRemoveClickEvent } = useMarker();
 
-  // Current Marker
-  const currentMarker = useMemo(() => {
-    if (!current) return null;
-
-    const { latitude, longitude } = current;
-    return handleCreateMarker({ latitude, longitude });
-  }, [current, handleCreateMarker]);
-
-  // NOTE 다른 마커 선택시 cleanUp 되는지 확인해볼 것
+  // NOTE 생성되지 않는 marker paint
   useEffect(() => {
-    if (!currentMarker) return;
+    if (!current || current.id) return;
 
+    const currentMarker = handleCreateMarker({ latitude: current.latitude, longitude: current.longitude });
     currentMarker.setMap(kakaoMap);
+
     return () => {
       currentMarker.setMap(null);
     };
-  }, [currentMarker, kakaoMap, handleRemoveClickEvent]);
+  }, [current, kakaoMap, handleCreateMarker]);
 
-  /**
-   * @note 이벤트바인딩할 때 새로운 kakao Marker가 필요하므로 비즈니스로직을 태우기위해 변수선언
-   */
-  const markers = useMemo(() => {
-    if (markerList.length === 0) return [];
-
-    return markerList.map(({ latitude, longitude, ...option }) => {
-      const marker = handleCreateMarker({ latitude, longitude });
-
-      return { marker, ...option };
-    });
-  }, [markerList, handleCreateMarker]);
-
+  // NOTE 이미 생성된 markerList paint
   useEffect(() => {
-    if (!kakaoMap || markers.length === 0) return;
+    if (!kakaoMap || markerList.length === 0) return;
+
+    const markers = markerList.map(({ latitude, longitude, ...option }) => ({
+      ...option,
+      marker: handleCreateMarker({ latitude, longitude }),
+    }));
+
     markers.forEach(({ marker, ...option }) => {
-      marker.setMap(kakaoMap);
       const position = marker.getPosition();
+
       handleAddClickEvent(marker, () =>
-        onClickMarker({ latitude: position.getLat(), longitude: position.getLng(), ...option })
+        onClickMarker({ ...option, latitude: position.getLat(), longitude: position.getLng() })
       );
+      marker.setMap(kakaoMap);
     });
 
     return () => {
       markers.forEach(({ marker, ...option }) => {
         const position = marker.getPosition();
+
         handleRemoveClickEvent(marker, () =>
-          onClickMarker({ latitude: position.getLat(), longitude: position.getLng(), ...option })
+          onClickMarker({ ...option, latitude: position.getLat(), longitude: position.getLng() })
         );
         marker.setMap(null);
       });
     };
-  }, [kakaoMap, markers, handleAddClickEvent, handleRemoveClickEvent, onClickMarker]);
+  }, [kakaoMap, markerList, handleCreateMarker, handleAddClickEvent, handleRemoveClickEvent, onClickMarker]);
 
-  // NOTE Map Event Bind
-  const clickMap = useCallback(
-    (event) => {
-      onClickMarker({ id: null, title: '', latitude: event.latLng.getLat(), longitude: event.latLng.getLng() });
-    },
-    [onClickMarker]
-  );
-
+  // NOTE 지도 click event bind
   useEffect(() => {
     if (!kakaoMap) return;
 
-    kakao.maps.event.addListener(kakaoMap, 'click', clickMap);
-    return () => {
-      kakao.maps.event.removeListener(kakaoMap, 'click', clickMap);
-    };
-  }, [kakaoMap, clickMap]);
+    const handleClickMap = ({ latLng }) =>
+      onClickMarker({ id: null, title: '', latitude: latLng.getLat(), longitude: latLng.getLng() });
 
+    kakao.maps.event.addListener(kakaoMap, 'click', handleClickMap);
+
+    return () => {
+      kakao.maps.event.removeListener(kakaoMap, 'click', handleClickMap);
+    };
+  }, [kakaoMap, onClickMarker]);
+
+  // NOTE 지도 draw
   useEffect(() => {
     handleDrawMap(ref.current);
   }, [handleDrawMap]);

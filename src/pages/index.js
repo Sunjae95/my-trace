@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 
 import { Information, Map } from '@components';
-import { createMarkerAPI, getMarkerListAPI, updateMarkerAPI } from '@services';
+import { createMarkerAPI, deleteMarkerAPI, getMarkerListAPI, updateMarkerAPI } from '@services';
 
 const Home = () => {
   const [isEditable, setIsEditable] = useState(false);
@@ -17,8 +17,9 @@ const Home = () => {
   const handleCreateMarker = useCallback(
     async (option) => {
       try {
-        await createMarkerAPI(option);
+        const { id } = await createMarkerAPI(option);
         await fetchMarkerList();
+        setCurrent((value) => ({ ...value, id }));
       } catch {
       } finally {
         setIsEditable(false);

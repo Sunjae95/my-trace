@@ -5,7 +5,9 @@ import { db } from '@utils';
 const markerReference = collection(db, 'marker');
 
 export const createMarkerAPI = async (marker) => {
-  await addDoc(markerReference, marker);
+  const { id } = await addDoc(markerReference, marker);
+
+  return { id };
 };
 
 export const updateMarkerAPI = async (id, option) => {
