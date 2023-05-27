@@ -2,7 +2,6 @@ import axios from 'axios';
 
 const KAKAO_LOCAL_URL = 'https://dapi.kakao.com/v2/local/';
 const GEO = 'geo';
-const SEARCH = 'search';
 
 const instance = axios.create({
   baseURL: KAKAO_LOCAL_URL,
