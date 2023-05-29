@@ -1,8 +1,12 @@
 import React, { useCallback, useMemo, useState } from 'react';
+import { useRouter } from 'next/router';
 
-import { Button } from '@components';
+import { Button, Text } from '@components';
+import { SIGN_UP_PAGE } from '@constants';
+import { FONT_SIZE, FONT_WEIGHT } from '@styles';
 
 const LoginPage = () => {
+  const { push } = useRouter();
   const [form, setForm] = useState({ id: '', password: '' });
 
   const handleChange = useMemo(
@@ -19,9 +23,15 @@ const LoginPage = () => {
     console.log(form);
   }, [form]);
 
+  const handleGoSignUpPage = useCallback(() => push(SIGN_UP_PAGE), [push]);
+
   return (
     <>
-      Login
+      <Text
+        text="로그인"
+        weight={FONT_WEIGHT.bold}
+        size={FONT_SIZE.large}
+      />
       <input
         placeholder="ID"
         value={form.id}
@@ -33,6 +43,7 @@ const LoginPage = () => {
         onChange={handleChange.password}
       />
       <Button onClick={handleSubmit}>로그인</Button>
+      <Button onClick={handleGoSignUpPage}>회원가입페이지로 가기</Button>
     </>
   );
 };
