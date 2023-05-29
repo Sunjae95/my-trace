@@ -2,7 +2,7 @@ import { useCallback, useMemo, useState } from 'react';
 import { useRouter } from 'next/router';
 
 import { Button } from '@components';
-import { LOGIN_PAGE } from '@constants';
+import { SIGN_IN_PAGE } from '@constants';
 
 const SignupPage = () => {
   const { push } = useRouter();
@@ -23,13 +23,11 @@ const SignupPage = () => {
     console.log(form);
   }, [form]);
 
-  const handleGoLoginPage = useCallback(() => {
-    push(LOGIN_PAGE);
-  }, [push]);
+  const handleGoLoginPage = useCallback(() => push(SIGN_IN_PAGE), [push]);
 
   return (
     <>
-      Signup
+      회원가입
       <input
         placeholder="ID"
         value={form.id}
