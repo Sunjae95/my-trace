@@ -4,6 +4,7 @@ import { useRouter } from 'next/router';
 import { Button, Text } from '@components';
 import { SIGN_IN_PAGE } from '@constants';
 import { FONT_SIZE, FONT_WEIGHT } from '@styles';
+import { signUpAPI } from '@services';
 
 const SignupPage = () => {
   const { push } = useRouter();
@@ -18,13 +19,15 @@ const SignupPage = () => {
     []
   );
 
-  const handleSubmit = useCallback(() => {
-    // TODO validation id, password, passwordCheck
-    // TODO SIGNUP API
-    console.log(form);
-  }, [form]);
-
   const handleGoLoginPage = useCallback(() => push(SIGN_IN_PAGE), [push]);
+
+  const handleSubmit = useCallback(async () => {
+    // TODO validation id, password, passwordCheck
+    try {
+      await signUpAPI(form.id, form.password);
+      handleGoLoginPage();
+    } catch {}
+  }, [form, handleGoLoginPage]);
 
   return (
     <>
