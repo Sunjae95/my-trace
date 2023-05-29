@@ -1,27 +1,33 @@
-import React, { createContext, useCallback, useState } from 'react';
+import React, { createContext, useCallback, useEffect, useState } from 'react';
 import Script from 'next/script';
 
 export const KakaoMapContext = createContext(null);
 
 export const KakaoMapProvider = ({ children }) => {
   const [isLoadingSDK, setIsLoadingSDK] = useState(true);
+  const [current, setCurrent] = useState(null);
   const [kakaoMap, setKakaoMap] = useState(null);
+
+  useEffect(() => {
+    navigator.geolocation.getCurrentPosition(({ coords }) => {
+      setCurrent({ latitude: coords.latitude, longitude: coords.longitude });
+    });
+  }, []);
 
   const handleDrawMap = useCallback(
     (dom) => {
-      if (isLoadingSDK || !dom) return;
+      if (isLoadingSDK || !dom || !current) return;
 
       new kakao.maps.load(() => {
         const options = {
-          center: new kakao.maps.LatLng(33.450701, 126.570667),
+          center: new kakao.maps.LatLng(current.latitude, current.longitude),
           level: 3,
         };
-        const map = new kakao.maps.Map(dom, options);
 
-        setKakaoMap(map);
+        setKakaoMap(new kakao.maps.Map(dom, options));
       });
     },
-    [isLoadingSDK]
+    [isLoadingSDK, current]
   );
 
   return (
