@@ -1,8 +1,9 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { useRouter } from 'next/router';
 
-import { Button } from '@components';
+import { Button, Text } from '@components';
 import { SIGN_UP_PAGE } from '@constants';
+import { FONT_SIZE, FONT_WEIGHT } from '@styles';
 
 const LoginPage = () => {
   const { push } = useRouter();
@@ -26,7 +27,11 @@ const LoginPage = () => {
 
   return (
     <>
-      로그인
+      <Text
+        text="로그인"
+        weight={FONT_WEIGHT.bold}
+        size={FONT_SIZE.large}
+      />
       <input
         placeholder="ID"
         value={form.id}

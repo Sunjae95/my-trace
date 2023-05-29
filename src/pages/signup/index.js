@@ -1,8 +1,9 @@
 import { useCallback, useMemo, useState } from 'react';
 import { useRouter } from 'next/router';
 
-import { Button } from '@components';
+import { Button, Text } from '@components';
 import { SIGN_IN_PAGE } from '@constants';
+import { FONT_SIZE, FONT_WEIGHT } from '@styles';
 
 const SignupPage = () => {
   const { push } = useRouter();
@@ -27,7 +28,11 @@ const SignupPage = () => {
 
   return (
     <>
-      회원가입
+      <Text
+        text="회원가입"
+        weight={FONT_WEIGHT.bold}
+        size={FONT_SIZE.large}
+      />
       <input
         placeholder="ID"
         value={form.id}
