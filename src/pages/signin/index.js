@@ -2,8 +2,9 @@ import React, { useCallback, useMemo, useState } from 'react';
 import { useRouter } from 'next/router';
 
 import { Button, Text } from '@components';
-import { SIGN_UP_PAGE } from '@constants';
+import { HOME_PAGE, SIGN_UP_PAGE } from '@constants';
 import { FONT_SIZE, FONT_WEIGHT } from '@styles';
+import { signInAPI } from '@services';
 
 const LoginPage = () => {
   const { push } = useRouter();
@@ -17,11 +18,15 @@ const LoginPage = () => {
     []
   );
 
-  const handleSubmit = useCallback(() => {
+  const handleSubmit = useCallback(async () => {
     // TODO validation id, password
-    // TODO LOGIN API
-    console.log(form);
-  }, [form]);
+    try {
+      await signInAPI(form.id, form.password);
+      push(HOME_PAGE);
+    } catch {
+    } finally {
+    }
+  }, [form, push]);
 
   const handleGoSignUpPage = useCallback(() => push(SIGN_UP_PAGE), [push]);
 
