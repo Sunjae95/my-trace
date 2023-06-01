@@ -3,7 +3,7 @@ import styled from '@emotion/styled';
 
 import { COLOR, FONT_SIZE, FONT_WEIGHT } from '@styles';
 
-import { Button, Text } from '../_base';
+import { Button, Input, Text } from '../_base';
 
 export const Information = memo(
   ({ isEditable, current, onChangeEditable, onChangeCurrentTitle, onCreateMarker, onUpdateMarker, onDeleteMarker }) => {
@@ -41,7 +41,8 @@ export const Information = memo(
       return (
         <Container>
           <TitleContainer>
-            <input
+            <Input
+              size="large"
               placeholder="제목을 입력해주세요"
               value={current.title}
               onChange={onChangeCurrentTitle}
