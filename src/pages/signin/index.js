@@ -1,7 +1,8 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { useRouter } from 'next/router';
+import styled from '@emotion/styled';
 
-import { Button, Text } from '@components';
+import { Button, Input, Text } from '@components';
 import { HOME_PAGE, SIGN_UP_PAGE } from '@constants';
 import { FONT_SIZE, FONT_WEIGHT } from '@styles';
 import { signInAPI } from '@services';
@@ -12,8 +13,8 @@ const LoginPage = () => {
 
   const handleChange = useMemo(
     () => ({
-      id: (e) => setForm((form) => ({ ...form, id: e.target.value })),
-      password: (e) => setForm((form) => ({ ...form, password: e.target.value })),
+      id: (value) => setForm((form) => ({ ...form, id: value })),
+      password: (value) => setForm((form) => ({ ...form, password: value })),
     }),
     []
   );
@@ -37,16 +38,21 @@ const LoginPage = () => {
         weight={FONT_WEIGHT.bold}
         size={FONT_SIZE.large}
       />
-      <input
-        placeholder="ID"
-        value={form.id}
-        onChange={handleChange.id}
-      />
-      <input
-        placeholder="Password"
-        value={form.password}
-        onChange={handleChange.password}
-      />
+      <InputWrapper>
+        <Input
+          hasBorder
+          placeholder="이메일"
+          value={form.id}
+          onChange={handleChange.id}
+        />
+        <Input
+          hasBorder
+          type="password"
+          placeholder="비밀번호"
+          value={form.password}
+          onChange={handleChange.password}
+        />
+      </InputWrapper>
       <Button onClick={handleSubmit}>로그인</Button>
       <Button onClick={handleGoSignUpPage}>회원가입페이지로 가기</Button>
     </>
@@ -54,3 +60,9 @@ const LoginPage = () => {
 };
 
 export default LoginPage;
+
+const InputWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+`;

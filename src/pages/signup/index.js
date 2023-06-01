@@ -1,7 +1,8 @@
 import { useCallback, useMemo, useState } from 'react';
 import { useRouter } from 'next/router';
+import styled from '@emotion/styled';
 
-import { Button, Text } from '@components';
+import { Button, Input, Text } from '@components';
 import { SIGN_IN_PAGE } from '@constants';
 import { FONT_SIZE, FONT_WEIGHT } from '@styles';
 import { signUpAPI } from '@services';
@@ -12,9 +13,9 @@ const SignupPage = () => {
 
   const handleChange = useMemo(
     () => ({
-      id: (e) => setForm((form) => ({ ...form, id: e.target.value })),
-      password: (e) => setForm((form) => ({ ...form, password: e.target.value })),
-      passwordCheck: (e) => setForm((form) => ({ ...form, passwordCheck: e.target.value })),
+      id: (value) => setForm((form) => ({ ...form, id: value })),
+      password: (value) => setForm((form) => ({ ...form, password: value })),
+      passwordCheck: (value) => setForm((form) => ({ ...form, passwordCheck: value })),
     }),
     []
   );
@@ -36,21 +37,28 @@ const SignupPage = () => {
         weight={FONT_WEIGHT.bold}
         size={FONT_SIZE.large}
       />
-      <input
-        placeholder="ID"
-        value={form.id}
-        onChange={handleChange.id}
-      />
-      <input
-        placeholder="Password"
-        value={form.password}
-        onChange={handleChange.password}
-      />
-      <input
-        placeholder="PasswordCheck"
-        value={form.passwordCheck}
-        onChange={handleChange.passwordCheck}
-      />
+      <InputWrapper>
+        <Input
+          hasBorder
+          placeholder="이메일"
+          value={form.id}
+          onChange={handleChange.id}
+        />
+        <Input
+          hasBorder
+          type="password"
+          placeholder="비밀번호"
+          value={form.password}
+          onChange={handleChange.password}
+        />
+        <Input
+          hasBorder
+          type="password"
+          placeholder="비밀번호확인"
+          value={form.passwordCheck}
+          onChange={handleChange.passwordCheck}
+        />
+      </InputWrapper>
       <Button onClick={handleSubmit}>회원가입</Button>
       <Button onClick={handleGoLoginPage}>로그인페이지로 가기</Button>
     </>
@@ -58,3 +66,9 @@ const SignupPage = () => {
 };
 
 export default SignupPage;
+
+const InputWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+`;

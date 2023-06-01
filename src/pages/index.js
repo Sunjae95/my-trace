@@ -62,8 +62,8 @@ const Home = () => {
 
   const handleChangeEditable = useCallback(() => setIsEditable((isEditable) => !isEditable), []);
 
-  const handleChangeCurrentTitle = useCallback((e) => {
-    setCurrent((current) => ({ ...current, title: e.target.value }));
+  const handleChangeCurrentTitle = useCallback((value) => {
+    setCurrent((current) => ({ ...current, title: value }));
   }, []);
 
   useEffect(() => {
