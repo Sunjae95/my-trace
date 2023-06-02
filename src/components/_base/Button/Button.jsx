@@ -28,7 +28,11 @@ const StyledButton = styled.button`
   border: none;
   cursor: pointer;
   border-radius: 5px;
-  background-color: ${({ disabled, buttonColor }) => (disabled ? COLOR.grey : buttonColor ?? COLOR.white)};
+  background-color: ${({ buttonColor }) => buttonColor ?? COLOR.white};
   font-size: ${({ size }) => FONT_SIZE[size] ?? FONT_SIZE.middle};
   padding: ${({ size }) => BUTTON_SIZE[size] ?? BUTTON_SIZE.middle};
+
+  &:disabled {
+    background-color: ${COLOR.grey};
+  }
 `;
