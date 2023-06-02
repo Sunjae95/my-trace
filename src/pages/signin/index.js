@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import styled from '@emotion/styled';
 
 import { Button, Input, Text } from '@components';
-import { HOME_PAGE, SIGN_UP_PAGE } from '@constants';
+import { ERROR_CODE_MESSAGE_MAP, HOME_PAGE, SIGN_UP_PAGE } from '@constants';
 import { FONT_SIZE, FONT_WEIGHT } from '@styles';
 import { signInAPI } from '@services';
 import { isValid } from '@utils';
@@ -11,6 +11,7 @@ import { isValid } from '@utils';
 const LoginPage = () => {
   const { push } = useRouter();
   const [form, setForm] = useState({ id: '', password: '' });
+  const [error, setError] = useState(null);
 
   const handleChange = useMemo(
     () => ({
@@ -23,12 +24,11 @@ const LoginPage = () => {
   const handleGoSignUpPage = useCallback(() => push(SIGN_UP_PAGE), [push]);
 
   const handleSubmit = useCallback(async () => {
-    // TODO validation id, password
     try {
       await signInAPI(form.id, form.password);
       push(HOME_PAGE);
-    } catch {
-    } finally {
+    } catch (error) {
+      setError(ERROR_CODE_MESSAGE_MAP.get(error.code) ?? null);
     }
   }, [form, push]);
 
@@ -55,6 +55,13 @@ const LoginPage = () => {
           value={form.password}
           onChange={handleChange.password}
         />
+        {error && (
+          <Text
+            text={error}
+            size={FONT_SIZE.small}
+            color={'red'}
+          />
+        )}
       </InputWrapper>
       <Button
         disabled={!isAbleSignIn}
