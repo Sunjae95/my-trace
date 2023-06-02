@@ -6,6 +6,7 @@ import { Button, Input, Text } from '@components';
 import { HOME_PAGE, SIGN_UP_PAGE } from '@constants';
 import { FONT_SIZE, FONT_WEIGHT } from '@styles';
 import { signInAPI } from '@services';
+import { isValid } from '@utils';
 
 const LoginPage = () => {
   const { push } = useRouter();
@@ -19,6 +20,8 @@ const LoginPage = () => {
     []
   );
 
+  const handleGoSignUpPage = useCallback(() => push(SIGN_UP_PAGE), [push]);
+
   const handleSubmit = useCallback(async () => {
     // TODO validation id, password
     try {
@@ -29,7 +32,7 @@ const LoginPage = () => {
     }
   }, [form, push]);
 
-  const handleGoSignUpPage = useCallback(() => push(SIGN_UP_PAGE), [push]);
+  const isAbleSignIn = useMemo(() => isValid.email(form.id) && isValid.password(form.password), [form]);
 
   return (
     <>
@@ -53,7 +56,12 @@ const LoginPage = () => {
           onChange={handleChange.password}
         />
       </InputWrapper>
-      <Button onClick={handleSubmit}>로그인</Button>
+      <Button
+        disabled={!isAbleSignIn}
+        onClick={handleSubmit}
+      >
+        로그인
+      </Button>
       <Button onClick={handleGoSignUpPage}>회원가입페이지로 가기</Button>
     </>
   );

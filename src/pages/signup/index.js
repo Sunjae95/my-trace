@@ -6,6 +6,7 @@ import { Button, Input, Text } from '@components';
 import { SIGN_IN_PAGE } from '@constants';
 import { FONT_SIZE, FONT_WEIGHT } from '@styles';
 import { signUpAPI } from '@services';
+import { isValid } from '@utils';
 
 const SignupPage = () => {
   const { push } = useRouter();
@@ -29,6 +30,15 @@ const SignupPage = () => {
       handleGoLoginPage();
     } catch {}
   }, [form, handleGoLoginPage]);
+
+  const isAbleSignUp = useMemo(
+    () =>
+      isValid.email(form.id) &&
+      isValid.password(form.password) &&
+      isValid.password(form.passwordCheck) &&
+      form.password === form.passwordCheck,
+    [form]
+  );
 
   return (
     <>
@@ -59,7 +69,12 @@ const SignupPage = () => {
           onChange={handleChange.passwordCheck}
         />
       </InputWrapper>
-      <Button onClick={handleSubmit}>회원가입</Button>
+      <Button
+        disabled={!isAbleSignUp}
+        onClick={handleSubmit}
+      >
+        회원가입
+      </Button>
       <Button onClick={handleGoLoginPage}>로그인페이지로 가기</Button>
     </>
   );
