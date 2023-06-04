@@ -28,7 +28,7 @@ export const AuthorizationProvider = ({ children }) => {
     replace(SIGN_IN_PAGE);
   }, [isLoading, isAuthorized, pathname, replace]);
 
-  return <AuthorizationContext.Provider value={{}}>{children}</AuthorizationContext.Provider>;
+  return <AuthorizationContext.Provider value={{ isAuthorized }}>{children}</AuthorizationContext.Provider>;
 };
 
 const unAuthenticatedRouteList = [SIGN_UP_PAGE, SIGN_IN_PAGE];

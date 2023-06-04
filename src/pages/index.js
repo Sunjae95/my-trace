@@ -2,22 +2,27 @@ import React, { useCallback, useEffect, useState } from 'react';
 
 import { Information, Map } from '@components';
 import { createMarkerAPI, deleteMarkerAPI, getMarkerListAPI, updateMarkerAPI } from '@services';
+import { useUserInfo } from '@hooks';
 
 const Home = () => {
+  const { userInfo } = useUserInfo();
+
   const [isEditable, setIsEditable] = useState(false);
   const [current, setCurrent] = useState(null);
   const [markerList, setMarkerList] = useState([]);
 
   // API 관련 함수
   const fetchMarkerList = useCallback(async () => {
-    const data = await getMarkerListAPI();
+    if (!userInfo) return;
+
+    const data = await getMarkerListAPI(userInfo.id);
     setMarkerList(data);
-  }, []);
+  }, [userInfo]);
 
   const handleCreateMarker = useCallback(
     async (option) => {
       try {
-        const { id } = await createMarkerAPI(option);
+        const { id } = await createMarkerAPI({ ...option, userId: userInfo.id });
         await fetchMarkerList();
         setCurrent((value) => ({ ...value, id }));
       } catch {
@@ -25,7 +30,7 @@ const Home = () => {
         setIsEditable(false);
       }
     },
-    [fetchMarkerList]
+    [userInfo, fetchMarkerList]
   );
 
   const handleUpdateMarker = useCallback(
