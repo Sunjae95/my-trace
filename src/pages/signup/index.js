@@ -49,27 +49,45 @@ const SignupPage = () => {
         weight={FONT_WEIGHT.bold}
         size={FONT_SIZE.large}
       />
-      <InputWrapper>
-        <Input
-          hasBorder
-          placeholder="이메일"
-          value={form.id}
-          onChange={handleChange.id}
-        />
-        <Input
-          hasBorder
-          type="password"
-          placeholder="비밀번호"
-          value={form.password}
-          onChange={handleChange.password}
-        />
-        <Input
-          hasBorder
-          type="password"
-          placeholder="비밀번호확인"
-          value={form.passwordCheck}
-          onChange={handleChange.passwordCheck}
-        />
+      <InputContainer>
+        <InputWrapper>
+          <Text
+            text="이메일"
+            size={FONT_SIZE.small}
+          />
+          <CustomInput
+            hasBorder
+            placeholder="이메일 형식을 작성해주세요."
+            value={form.id}
+            onChange={handleChange.id}
+          />
+        </InputWrapper>
+        <InputWrapper>
+          <Text
+            text="비밀번호"
+            size={FONT_SIZE.small}
+          />
+          <CustomInput
+            hasBorder
+            type="password"
+            placeholder="영어 대소문자, 숫자, 특수문자 1개이상"
+            value={form.password}
+            onChange={handleChange.password}
+          />
+        </InputWrapper>
+        <InputWrapper>
+          <Text
+            text="비밀번호확인"
+            size={FONT_SIZE.small}
+          />
+          <CustomInput
+            hasBorder
+            type="password"
+            placeholder="영어 대소문자, 숫자, 특수문자 1개이상"
+            value={form.passwordCheck}
+            onChange={handleChange.passwordCheck}
+          />
+        </InputWrapper>
         {error && (
           <Text
             text={error}
@@ -77,7 +95,7 @@ const SignupPage = () => {
             color={'red'}
           />
         )}
-      </InputWrapper>
+      </InputContainer>
       <Button
         disabled={!isAbleSignUp}
         onClick={handleSubmit}
@@ -91,8 +109,21 @@ const SignupPage = () => {
 
 export default SignupPage;
 
-const InputWrapper = styled.div`
+const InputContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 16px;
+`;
+
+const InputWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+`;
+
+const CustomInput = styled(Input)`
+  &::placeholder {
+    font-size: ${FONT_SIZE.small};
+  }
 `;
