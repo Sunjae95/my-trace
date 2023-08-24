@@ -2,11 +2,7 @@ import React from 'react';
 import styled from '@emotion/styled';
 import { COLOR, FONT_SIZE } from '@styles';
 
-export const Input = ({ value, onChange, size = 'middle', hasBorder = false, width, block, ...props }) => {
-  const handleChange = (e) => {
-    onChange(e.target.value);
-  };
-
+export const Input = ({ value, size = 'middle', hasBorder = false, width, block, ...props }) => {
   return (
     <StyledInput
       {...props}
@@ -14,7 +10,6 @@ export const Input = ({ value, onChange, size = 'middle', hasBorder = false, wid
       size={size}
       width={block ? '100%' : width}
       hasBorder={hasBorder}
-      onChange={handleChange}
     />
   );
 };
