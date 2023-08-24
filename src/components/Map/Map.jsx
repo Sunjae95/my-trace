@@ -10,6 +10,7 @@ export const Map = memo(({ current, markerList, onClickMarker }) => {
   const { handleCreateMarker, handleAddClickEvent, handleRemoveClickEvent } = useMarker();
 
   // NOTE 생성되지 않는 marker paint
+  // TODO title 상태분리할 것
   useEffect(() => {
     if (!current || current.id) return;
 
