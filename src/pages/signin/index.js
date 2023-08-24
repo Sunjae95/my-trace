@@ -7,19 +7,13 @@ import { ERROR_CODE_MESSAGE_MAP, HOME_PAGE, SIGN_UP_PAGE } from '@constants';
 import { FONT_SIZE, FONT_WEIGHT } from '@styles';
 import { signInAPI } from '@services';
 import { isValid } from '@utils';
+import { useForm } from '@hooks';
 
 const LoginPage = () => {
   const { push } = useRouter();
-  const [form, setForm] = useState({ id: '', password: '' });
   const [error, setError] = useState(null);
 
-  const handleChange = useMemo(
-    () => ({
-      id: (value) => setForm((form) => ({ ...form, id: value })),
-      password: (value) => setForm((form) => ({ ...form, password: value })),
-    }),
-    []
-  );
+  const { form, changeForm } = useForm({ id: '', password: '' });
 
   const handleGoSignUpPage = useCallback(() => push(SIGN_UP_PAGE), [push]);
 
@@ -45,15 +39,17 @@ const LoginPage = () => {
         <Input
           hasBorder
           placeholder="이메일"
+          name="id"
           value={form.id}
-          onChange={handleChange.id}
+          onChange={changeForm}
         />
         <Input
           hasBorder
           type="password"
           placeholder="비밀번호"
+          name="password"
           value={form.password}
-          onChange={handleChange.password}
+          onChange={changeForm}
         />
         {error && (
           <Text

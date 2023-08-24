@@ -7,20 +7,13 @@ import { ERROR_CODE_MESSAGE_MAP, SIGN_IN_PAGE } from '@constants';
 import { FONT_SIZE, FONT_WEIGHT } from '@styles';
 import { signUpAPI } from '@services';
 import { isValid } from '@utils';
+import { useForm } from '@hooks';
 
 const SignupPage = () => {
   const { push } = useRouter();
-  const [form, setForm] = useState({ id: '', password: '', passwordCheck: '' });
   const [error, setError] = useState(null);
 
-  const handleChange = useMemo(
-    () => ({
-      id: (value) => setForm((form) => ({ ...form, id: value })),
-      password: (value) => setForm((form) => ({ ...form, password: value })),
-      passwordCheck: (value) => setForm((form) => ({ ...form, passwordCheck: value })),
-    }),
-    []
-  );
+  const { form, changeForm } = useForm({ id: '', password: '', passwordCheck: '' });
 
   const handleGoLoginPage = useCallback(() => push(SIGN_IN_PAGE), [push]);
 
@@ -58,8 +51,9 @@ const SignupPage = () => {
           <CustomInput
             hasBorder
             placeholder="이메일 형식을 작성해주세요."
+            name="id"
             value={form.id}
-            onChange={handleChange.id}
+            onChange={changeForm}
           />
         </InputWrapper>
         <InputWrapper>
@@ -70,9 +64,10 @@ const SignupPage = () => {
           <CustomInput
             hasBorder
             type="password"
+            name="password"
             placeholder="영어 대소문자, 숫자, 특수문자 1개이상"
             value={form.password}
-            onChange={handleChange.password}
+            onChange={changeForm}
           />
         </InputWrapper>
         <InputWrapper>
@@ -83,9 +78,10 @@ const SignupPage = () => {
           <CustomInput
             hasBorder
             type="password"
+            name="passwordCheck"
             placeholder="영어 대소문자, 숫자, 특수문자 1개이상"
             value={form.passwordCheck}
-            onChange={handleChange.passwordCheck}
+            onChange={changeForm}
           />
         </InputWrapper>
         {error && (
