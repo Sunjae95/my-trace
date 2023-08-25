@@ -74,7 +74,7 @@ export const Map = memo(({ current, markerList, onClickMarker }) => {
   return (
     <div
       ref={ref}
-      style={{ width: '80%', height: '400px' }}
-    ></div>
+      style={{ width: '100%', height: '100%' }}
+    />
   );
 });

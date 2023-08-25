@@ -13,3 +13,6 @@ export const COLOR = {
   black: '#000000',
   grey: '#CCCCCC',
 };
+export const Z_INDEX = {
+  information: 1000,
+};
