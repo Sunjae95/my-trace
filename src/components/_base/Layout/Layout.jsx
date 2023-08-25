@@ -1,13 +1,20 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import styled from '@emotion/styled';
 import { Noto_Sans_KR } from 'next/font/google';
+import { useRouter } from 'next/router';
+
+import { SIGN_IN_PAGE, SIGN_UP_PAGE } from '@constants';
 
 const notoSansKorea = Noto_Sans_KR({ weight: ['100', '400', '700'], subsets: ['latin'] });
 
 export const Layout = ({ children }) => {
+  const { pathname } = useRouter();
+
+  const isAuthPage = useMemo(() => [SIGN_IN_PAGE, SIGN_UP_PAGE].includes(pathname), [pathname]);
+
   return (
     <Container className={notoSansKorea.className}>
-      <Wrapper>{children}</Wrapper>
+      {isAuthPage ? <>{children}</> : <Wrapper>{children}</Wrapper>}
     </Container>
   );
 };
