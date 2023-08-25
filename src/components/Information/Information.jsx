@@ -1,7 +1,7 @@
 import React, { memo, useCallback } from 'react';
 import styled from '@emotion/styled';
 
-import { COLOR, FONT_SIZE, FONT_WEIGHT } from '@styles';
+import { COLOR, FONT_SIZE, FONT_WEIGHT, Z_INDEX } from '@styles';
 
 import { Button, Input, Text } from '../_base';
 
@@ -109,9 +109,18 @@ export const Information = memo(
 );
 
 const Container = styled.div`
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  z-index: ${Z_INDEX.information};
   display: flex;
   flex-direction: column;
   gap: 8px;
+  width: 100%;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  padding: 20px 8px;
+  background-color: ${COLOR.white};
 `;
 
 const TitleContainer = styled.div`
